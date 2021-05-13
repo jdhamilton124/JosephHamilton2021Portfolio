@@ -15,11 +15,17 @@ class Game(object):
         pg.display.set_caption(TITLE)
         self.clock = pg.time.Clock()
 
+        self.crunches = []
+        for i in range(8):
+            self.crunches.append(pg.mixer.Sound(path.join(sounds_folder, "aargh{}.ogg".format(i))))
+            self.crunches[i].set_volume(0.2)
+
     def new(self):
         self.all_sprites = pg.sprite.Group()
         self.paddles = pg.sprite.Group()
         self.blocks = pg.sprite.Group()
         self.balls = pg.sprite.Group()
+        self.blood = pg.sprite.Group()
 
         self.hud_font = path.join(image_folder, 'VIVALDII.TTF')
 

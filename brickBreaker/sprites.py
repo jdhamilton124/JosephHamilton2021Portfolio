@@ -53,6 +53,7 @@ class Block(pg.sprite.Sprite):
         self.rect.center = (x, y)
         self.health = 3
         self.timer = 0
+        self.game = game
 
     def update(self):
         if self.health >= 3:
@@ -62,6 +63,10 @@ class Block(pg.sprite.Sprite):
         elif self.health >= 1:
             self.image.fill(RED)
         else:
+            bla = random.choice(self.game.crunches)
+            bla.play()
+            for i in range(185):
+                BloodDrop(self.game, self.rect.center, 5)
             self.kill()
 
     def take_damage(self):
@@ -69,6 +74,32 @@ class Block(pg.sprite.Sprite):
         if now - self.timer > 100:
             self.timer = now
             self.health -= 1
+
+class BloodDrop(pg.sprite.Sprite):
+    def __init__(self, game, center, range):
+        self.groups = game.all_sprites, game.blood
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.speedy = random.randint(-2 - range, 2 + range)
+        self.speedx = random.randint(min(-1 - range + abs(self.speedy), -1), max(1 - abs(self.speedy) + range, 1))
+        self.speedy += 5
+        self.image = pg.Surface((35, 35))
+        self.image.fill(BLOOD_RED)
+        self.rect = self.image.get_rect()
+        self.num = 15
+        self.image = pg.transform.scale(self.image, (self.num, self.num))
+        self.rect.center = center
+
+    def update(self):
+        self.rect.y += self.speedy
+        self.rect.x += self.speedx
+        if random.random() > 0.60:
+            self.num -= 2
+            if self.num <= 5:
+                self.kill()
+            self.image = pg.transform.scale(self.image, (self.num, self.num))
+        if self.rect.left > WIDTH or self.rect.right < 0 or self.rect.top > HEIGHT:
+            self.kill()
 
 
 class Ball(pg.sprite.Sprite):
